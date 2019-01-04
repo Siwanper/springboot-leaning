@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>if/unless</title>
+</head>
+<body>
+    <h1>If/unless</h1>
+    <p th:if="${flag == 'yes'}" th:text="'if yes'">if</p>
+    <p th:unless="${flag != 'no'}" th:text="'if no'">no</p>
+</body>
+</html>

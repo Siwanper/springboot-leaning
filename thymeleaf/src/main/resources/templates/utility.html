@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>内嵌变量</title>
+</head>
+<body>
+    <h1>utility</h1>
+    <div>
+        <!--格式化时间-->
+        <p th:text="${#dates.format(date, 'yyyy-MM-dd HH:mm:ss')}"></p>
+        <!--创建当前时间精确到天-->
+        <p th:text="${#dates.createToday()}"></p>
+        <p th:text="${#dates.createNow()}"></p>
+
+        <p th:text="${#strings.isEmpty(userName)}"></p>
+        <p th:text="${#strings.listIsEmpty(users)}"></p>
+        <p th:text="${#strings.length(userName)}"></p>
+
+        <p th:text="${#strings.concat(userName,userName)}"></p>
+
+    </div>
+
+
+
+</body>
+</html>
