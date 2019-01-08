@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swp.mybatisxml.mapper.UserMapper">
+
+    <resultMap id="UserMap" type="com.swp.mybatisxml.model.User">
+        <id property="uid" column="uid" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
+        <result property="userSex" column="user_sex" jdbcType="CHAR"/>
+        <result property="userBirthday" column="user_birthday" jdbcType="DATE"/>
+    </resultMap>
+
+    <sql id="Base_Column">
+        uid, user_name, user_password, user_sex, user_birthday
+    </sql>
+
+    <select id="getAllUser" resultMap="UserMap">
+        SELECT
+        <include refid="Base_Column"/>
+        FROM tb_user
+    </select>
+
+    <select id="getUser" resultMap="UserMap" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="Base_Column"/>
+        FROM tb_user WHERE uid = #{uid}
+    </select>
+
+    <insert id="insertUser" parameterType="com.swp.mybatisxml.model.User">
+        INSERT INTO tb_user(user_name,user_password,user_sex,user_birthday) VALUES(#{userName}, #{userPassword}, #{userSex}, #{userBirthday})
+    </insert>
+
+    <update id="updateUser" parameterType="com.swp.mybatisxml.model.User">
+        UPDATE tb_user SET
+        <if test="userName != null">user_name = #{userName}</if>
+        WHERE uid = #{uid}
+    </update>
+
+    <delete id="deleteUser" parameterType="java.lang.Integer">
+        DELETE FROM tb_user WHERE uid = #{uid}
+    </delete>
+
+</mapper>
