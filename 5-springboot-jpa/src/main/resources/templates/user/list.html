@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+</head>
+<body class="container">
+
+<h1>用户列表</h1>
+<br>
+<div id="userList" class="with:80%">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>userName</th>
+                <th>userPassword</th>
+                <th>userSex</th>
+                <th>userBirthday</th>
+                <th>userRegTime</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.uid}">1</td>
+                <td th:text="${user.userName}">admin</td>
+                <td th:text="${user.userPassword}">****</td>
+                <td th:text="${user.userSex == 1 ? '男' : '女'}"></td>
+                <td th:text="${#dates.format(user.userBirthday, 'yyyy-MM-dd')}">1992-10-10</td>
+                <td th:text="${#dates.format(user.userRegTime, 'yyyy-MM-dd')}">1992-10-10</td>
+                <td><a th:href="@{/toEdit(uid=${user.uid})}">编辑</a></td>
+                <td><a th:href="@{/delete(uid=${user.uid})}" onclick="return confirm('确定删除该用户？')">删除</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <div th:include="page :: pager" th:remove="tag"></div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-2 control-label">
+        <a th:href="@{/toAdd}" href="/toAdd" class="btn btn-info">add</a>
+    </div>
+</div>
+
+</body>
+</html>
