@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>聊天系统</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+</head>
+<body>
+
+<div class="container">
+    <h1>聊天系统</h1>
+    <br/>
+    <div class="form-group col-md-8">
+        <label for="nickname">昵称：</label>
+
+        <input id="nickname" class="form-control" type="text">
+        <br>
+        <button class="btn btn-info" onclick="connect()">建立连接</button>
+
+        <button class="btn btn-info" onclick="closeConnect()">断开连接</button>
+    </div>
+    <br/>
+    <br/>
+    <div class="form-group col-md-8">
+        <textarea id="text" class="form-control" rows="3" placeholder="请输入消息"></textarea>
+        <label for="sessionId">频道号：</label>
+
+        <input id="sessionId" class="form-control" type="text">
+        <br/>
+        <button class="btn btn-info" onclick="send()">发送消息</button>
+    </div>
+    <br/>
+    <br/>
+    <div class="form-group col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    聊天记录
+                </h3>
+            </div>
+            <div id="message" class="panel-body">
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        var websocket = null;
+
+        
+        function connect() {
+
+            var nickname = document.getElementById("nickname").value;
+
+            if (nickname == null) {
+                alert("请输入昵称");
+                return;
+            }
+
+            if ('WebSocket' in  window) {
+                websocket =  new WebSocket("ws://localhost:8080/websocket/"+nickname);
+            } else {
+                alert("您的浏览器不支持WebSocket");
+            }
+            //以下是回调方法
+            //连接成功
+            websocket.onopen = function (ev) {
+                showMessage("连接成功");
+            };
+            //收到消息
+            websocket.onmessage = function (ev) {
+                showMessage(ev.data);
+            };
+            //断开连接
+            websocket.onclose = function (ev) {
+                showMessage("断开连接");
+            };
+            //错误
+            websocket.onerror = function (ev) {
+                showMessage("发生错误");
+            };
+            // 窗口关闭
+            websocket.onbeforeunload = function () {
+              websocket.close();
+            };
+
+        }
+        // 关闭连接
+        function closeConnect() {
+            websocket.close();
+        }
+        // 发送消息
+        function send() {
+            var msg = document.getElementById("text").value;
+            var sessionId = document.getElementById("sessionId").value;
+            var  socketMsg = {msg:msg, toUser:sessionId};
+            if (sessionId == ''){
+                socketMsg.type = 0;
+            }else {
+                socketMsg.type = 1;
+            }
+            websocket.send(JSON.stringify(socketMsg));
+        }
+
+        // 将消息展示到面板上
+        function showMessage(message) {
+            document.getElementById("message").innerHTML += message + '<br/>';
+        }
+
+
+        
+
+    </script>
+</div>
+
+</body>
+</html>
