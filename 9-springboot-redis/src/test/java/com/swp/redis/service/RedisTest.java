@@ -5,7 +5,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.UUID;
@@ -39,5 +41,30 @@ public class RedisTest {
         User rUser = (User) redisTemplate.opsForValue().get("user");
         System.out.println(rUser);
     }
+
+    @Test
+    public void listTest(){
+        ListOperations listOperations = redisTemplate.opsForList();
+        listOperations.rightPush("list", "a");
+
+        Long s1 = listOperations.size("list");
+        System.out.println(s1);
+
+        Object o = redisTemplate.opsForList().leftPop("list");
+        System.out.println(o);
+        Long s = listOperations.size("list");
+        System.out.println(s);
+    }
+
+    @Test
+    public void setTest(){
+        SetOperations setOperations = redisTemplate.opsForSet();
+        setOperations.add("set","aaa");
+        setOperations.add("set","aaa");
+        System.out.println(setOperations.size("set"));
+        Object o = setOperations.pop("set");
+        System.out.println(o);
+    }
+
 
 }
