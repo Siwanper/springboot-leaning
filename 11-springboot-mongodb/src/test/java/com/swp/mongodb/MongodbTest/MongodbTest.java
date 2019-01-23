@@ -33,4 +33,10 @@ public class MongodbTest {
 
     }
 
+    @Test
+    public void getUser(){
+        User user = userDao.findUserByUsername("egon");
+        System.out.println(user);
+    }
+
 }
