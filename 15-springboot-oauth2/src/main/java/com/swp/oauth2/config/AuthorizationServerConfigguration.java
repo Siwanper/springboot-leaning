@@ -3,6 +3,7 @@ package com.swp.oauth2.config;
 import com.swp.oauth2.model.Authorities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -40,6 +41,12 @@ public class AuthorizationServerConfigguration extends AuthorizationServerConfig
         endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager);
     }
 
+    /**
+     * 这里客户端的secret是12345678，存储的是通过BCryptPasswordEncoder 加密后的
+     *
+     * @param clients
+     * @throws Exception
+     */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
@@ -47,7 +54,7 @@ public class AuthorizationServerConfigguration extends AuthorizationServerConfig
                 .scopes("read", "write")
                 .authorities(Authorities.ROLE_USER.name(), Authorities.ROLE_ADMIN.name())
                 .authorizedGrantTypes("password", "refresh_token")
-                .secret("yuqiyu_secret")
+                .secret("$2a$10$0jyHr4rGRdQw.X9mrLkVROdQI8.qnWJ1Sl8ly.yzK0bp06aaAkL9W")
                 .accessTokenValiditySeconds(1800);
     }
 
@@ -58,6 +65,7 @@ public class AuthorizationServerConfigguration extends AuthorizationServerConfig
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
+    @Bean
     public TokenStore tokenStore(){
         return new JdbcTokenStore(dataSource);
     }

@@ -29,6 +29,17 @@ public class CustomLogoutSuccessHandler
     @Autowired
     private TokenStore tokenStore;
 
+    /**
+     * 退出系统时需要访问SpringSecrutiy的logout方法来清空对应的session信息，
+     * 那我们退出后改用户的access_token还依然存在那就危险了，
+     * 一旦别人知道该token就可以使用之前登录用户的权限来操作业务
+     *
+     * @param request
+     * @param response
+     * @param authentication
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void onLogoutSuccess(HttpServletRequest request,
                                 HttpServletResponse response,
