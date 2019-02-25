@@ -50,7 +50,7 @@ public class MyRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-
+        System.out.println("MyRealm -> doGetAuthenticationInfo");
         String username = (String) authenticationToken.getPrincipal();
 
         SysUser user = repository.findByUsername(username);
@@ -60,7 +60,6 @@ public class MyRealm extends AuthorizingRealm {
         } else if (user.getState() == 2){
             throw new DisabledAccountException("账户被禁用");
         }
-
 
         SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(user.getCredentialsSalt()), getName());
 

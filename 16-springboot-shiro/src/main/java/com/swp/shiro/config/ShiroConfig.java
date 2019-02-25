@@ -5,7 +5,14 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
@@ -23,6 +30,12 @@ import java.util.Properties;
 @Configuration
 public class ShiroConfig {
 
+    @Value("${spring.redis.host}")
+    private String host;
+
+    @Value("${spring.redis.port}")
+    private int port;
+
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(){
 
@@ -37,6 +50,8 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap = new HashMap<>();
         // 不会被拦截的url
         filterChainDefinitionMap.put("/static", "anon");
+        filterChainDefinitionMap.put("/toLogin", "anon");
+        filterChainDefinitionMap.put("/getVcode", "anon");
         // 退出url
         filterChainDefinitionMap.put("/logout", "logout");
         // 所有的url都需要通过验证才能访问
@@ -55,6 +70,12 @@ public class ShiroConfig {
     public SecurityManager securityManager(){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(myRealm());
+        // 自定义缓存实现
+        securityManager.setCacheManager(cacheManager());
+        // 自定义session管理
+        securityManager.setSessionManager(sessionManager());
+        // 记住我cookie管理
+        securityManager.setRememberMeManager(rememberMeManager());
         return securityManager;
     }
 
@@ -69,6 +90,70 @@ public class ShiroConfig {
         MyRealm realm = new MyRealm();
         realm.setCredentialsMatcher(hashedCredentialsMatcher());
         return  realm;
+    }
+
+    /**
+     * 配置shiro redisManager
+     * @return
+     */
+    public RedisManager redisManager(){
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost(host);
+        redisManager.setPort(port);
+        redisManager.setExpire(60);
+        return redisManager;
+    }
+
+    /**
+     * cacheManager 缓存redis实现
+     *
+     * @return
+     */
+    public RedisCacheManager cacheManager(){
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager());
+        return redisCacheManager;
+    }
+
+    /**
+     *  RedisSessionDAO shiro sessionDao层的实现 通过redis
+     *
+     * @return
+     */
+    public RedisSessionDAO redisSessionDAO(){
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager());
+        return redisSessionDAO;
+    }
+
+    /**
+     * shiro session的管理
+     */
+    public DefaultWebSessionManager sessionManager(){
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setSessionDAO(redisSessionDAO());
+        return sessionManager;
+    }
+
+    /**
+     * cookie对象
+     * @return
+     */
+    public SimpleCookie rememberMeCookie(){
+        SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
+        // cookie生效时间 ,单位 ： 秒
+        simpleCookie.setMaxAge(60);
+        return simpleCookie;
+    }
+
+    /**
+     * cookie 管理器； 记住我功能
+     * @return
+     */
+    public CookieRememberMeManager rememberMeManager(){
+        CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
+        rememberMeManager.setCookie(rememberMeCookie());
+        return rememberMeManager;
     }
 
     /**
