@@ -1,6 +1,7 @@
 package com.swp.shiro.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,8 +11,9 @@ import java.util.List;
  * @create 2019-02-22 3:03 PM
  */
 @Entity
-public class SysPermission {
+public class SysPermission implements Serializable {
 
+    private static final long serialVersionUID = -1376913067461079976L;
     @Id
     @GeneratedValue
     private Integer id;
