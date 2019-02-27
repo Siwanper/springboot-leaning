@@ -1,5 +1,6 @@
 package com.swp.shiro.config;
 
+import com.swp.shiro.core.filter.KickoutSessionControlFilter;
 import com.swp.shiro.core.realm.MyRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
@@ -17,7 +18,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
+import javax.servlet.Filter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -40,6 +43,9 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean shiroFilterFactoryBean(){
 
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+
+        shiroFilterFactoryBean.setSecurityManager(securityManager());
+
         // 登录url
         shiroFilterFactoryBean.setLoginUrl("/login");
         // 登录成功url
@@ -47,18 +53,24 @@ public class ShiroConfig {
         // 没有权限跳转url
         shiroFilterFactoryBean.setUnauthorizedUrl("/403");
 
+        // 自定义过滤器
+        Map<String ,Filter> filterMap = new LinkedHashMap<String, Filter>();
+        filterMap.put("kickout", kickoutSessionControlFilter());
+        shiroFilterFactoryBean.setFilters(filterMap);
+
         Map<String, String> filterChainDefinitionMap = new HashMap<>();
         // 不会被拦截的url
-        filterChainDefinitionMap.put("/static", "anon");
-        filterChainDefinitionMap.put("/toLogin", "anon");
+        filterChainDefinitionMap.put("/asset/**", "anon");
         filterChainDefinitionMap.put("/getVcode", "anon");
+        filterChainDefinitionMap.put("/toLogin", "anon");
+        filterChainDefinitionMap.put("/kickout", "anon");
+
         // 退出url
         filterChainDefinitionMap.put("/logout", "logout");
         // 所有的url都需要通过验证才能访问
-        filterChainDefinitionMap.put("/**", "authc");
+        filterChainDefinitionMap.put("/**", "authc,kickout");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        shiroFilterFactoryBean.setSecurityManager(securityManager());
 
         return shiroFilterFactoryBean;
     }
@@ -167,6 +179,21 @@ public class ShiroConfig {
         matcher.setHashIterations(2);// 散列算法的次数
         return matcher;
     }
+
+    /**
+     * 踢出用户过滤器
+     * @return
+     */
+    public KickoutSessionControlFilter kickoutSessionControlFilter(){
+        KickoutSessionControlFilter kickoutSessionControlFilter = new KickoutSessionControlFilter();
+        kickoutSessionControlFilter.setKickoutUrl("/kickout");
+        kickoutSessionControlFilter.setKickoutAfter(false);
+        kickoutSessionControlFilter.setMaxSession(1);
+        kickoutSessionControlFilter.setCacheManager(cacheManager());
+        kickoutSessionControlFilter.setSessionManager(sessionManager());
+        return kickoutSessionControlFilter;
+    }
+
 
     /**
      * 开启shiro aop注解支持

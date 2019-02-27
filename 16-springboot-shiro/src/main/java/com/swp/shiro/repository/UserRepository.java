@@ -12,4 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<SysUser , Integer> {
     // 根据用户名查找用户
     SysUser findByUsername(String username);
+
+    SysUser findByUsernameAndPassword(String username, String password);
 }

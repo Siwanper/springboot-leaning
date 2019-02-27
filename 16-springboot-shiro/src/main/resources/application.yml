@@ -32,7 +32,6 @@ spring:
 
   thymeleaf:
      cache: false
-     mode: LEGACYHTML5
 
   redis:
     database: 0
