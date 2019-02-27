@@ -7,43 +7,53 @@
     <link rel="stylesheet" th:href="@{/asset/css/bootstrap.min.css}">
     <script th:src="@{/asset/js/jquery-3.3.1.min.js}"></script>
     <script th:src="@{/asset/js/bootstrap.min.js}"></script>
+    <style type="text/css">
+        #login-window {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 500px;
+            height: 300px;
+            margin-left: -250px;
+            margin-top: -150px;
+            padding: 35px 55px 35px 25px;
+            z-index: 10;
+            background: #ffffff;
+            box-shadow: 0 1px 11px rgba(0,0,0,.27);
+            border-radius: 2px;
+        }
+    </style>
 </head>
 <body style="background-color: #0062cc">
 
 <div class="container">
-    <div class="center-block" style="width: 300px; background-color: #ffffff; margin-top: 250px">
+    <div id="login-window">
         <form class="form-horizontal" role="form" action="/toLogin" method="post">
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="username">账号：</label>
-                <div class="col-md-8">
-                    <input id="username" class="form-control" type="text" name="username" placeholder="请输入用户名"/>
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">账号</span>
                 </div>
+                <input id="username" class="form-control" type="text" name="username" placeholder="请输入用户名"/>
+            </div>
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">密码</span>
+                </div>
+                <input id="password" class="form-control" type="text" name="password" placeholder="请输入密码"/>
+            </div>
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">验证码</span>
+                </div>
+                <input id="vcode" class="form-control" type="text" name="vcode" placeholder="请输入验证码"/>
+                <img src="/getVcode" alt="验证码">
             </div>
             <div class="form-group">
-                <label class="col-md-4 control-label" for="password">密码：</label>
-                <div class="col-md-8">
-                    <input id="password" class="form-control" type="text" name="password" placeholder="请输入密码"/>
-                </div>
+                <input type="checkbox" name="rememberMe" id="rememberMe"/> 记住我
             </div>
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="vcode">验证码：</label>
-                <div class="col-md-8">
-                    <input id="vcode" class="form-control" type="text" name="vcode" placeholder="请输入验证码"/>
-                    <img src="/getVcode" alt="验证码">
-                </div>
 
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <input type="checkbox" name="rememberMe" id="rememberMe"/> 记住我
-                </div>
+                <input class="btn btn-info" type="submit" value="登录"/>
 
-            </div>
-            <div class="form-group center-block">
-                <div class="col-sm-offset-5 col-sm-5">
-                    <input class="btn btn-default-lg" type="submit" value="登录"/>
-                </div>
-            </div>
         </form>
     </div>
 </div>
