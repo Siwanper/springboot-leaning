@@ -50,7 +50,7 @@ public class HomeController {
      * @param map
      * @return
      */
-    @RequestMapping( name = "/toLogin", method = RequestMethod.POST)
+    @RequestMapping(name = "/toLogin", method = RequestMethod.POST)
     public String toLogin(String username, String password, String vcode, Boolean rememberMe, Map<String, Object> map) {
         System.out.println("登录用户：" + username +" "+ password +" "+ vcode + rememberMe);
         if (vcode == null || vcode == "") {
