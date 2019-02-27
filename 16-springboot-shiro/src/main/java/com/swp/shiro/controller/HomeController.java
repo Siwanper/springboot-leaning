@@ -2,6 +2,7 @@ package com.swp.shiro.controller;
 
 import com.swp.shiro.tools.vcode.Captcha;
 import com.swp.shiro.tools.vcode.GifCaptcha;
+import com.swp.shiro.tools.vcode.SpecCaptcha;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.session.Session;
@@ -35,13 +36,18 @@ public class HomeController {
 
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Map<String ,Object> map, String username, String password){
-        return "/login";
+        return "login";
     }
 
-//    @RequestMapping(name = "/toLogin", method = RequestMethod.GET)
-//    public String toLogin(){
-//        return "redirect:/index";
-//    }
+    @RequestMapping("/kickout")
+    public String kickout(){
+        return "kickout";
+    }
+
+    @RequestMapping(value = "/toLogin", method = RequestMethod.GET)
+    public String toLogin(){
+        return "redirect:/index";
+    }
     /**
      * 登录接口
      * @param username
@@ -50,7 +56,11 @@ public class HomeController {
      * @param map
      * @return
      */
+<<<<<<< HEAD
     @RequestMapping(name = "/toLogin", method = RequestMethod.POST)
+=======
+    @RequestMapping( value = "/toLogin", method = RequestMethod.POST)
+>>>>>>> eb6c72e8aa4d2d8e31d83398f46913becad5b0a0
     public String toLogin(String username, String password, String vcode, Boolean rememberMe, Map<String, Object> map) {
         System.out.println("登录用户：" + username +" "+ password +" "+ vcode + rememberMe);
         if (vcode == null || vcode == "") {
@@ -102,18 +112,14 @@ public class HomeController {
      * @param response
      * @param request
      */
-    @RequestMapping(name = "/getVcode", method=RequestMethod.GET)
+    @RequestMapping(value = "/getVcode", method=RequestMethod.GET, produces = "image/png" )
     public void getVcode(HttpServletResponse response, HttpServletRequest request){
 
         try {
-            response.setHeader("Pragma","no-cache");
-            response.setHeader("Cache-Control","no-cache");
-            response.setDateHeader("Expires", 0);
-            response.setContentType("image/gif");
             /**
              * 获取gif验证码
              */
-            Captcha captcha = new GifCaptcha(144 , 33, 4);
+            Captcha captcha = new SpecCaptcha(144 , 33, 4);
             captcha.out(response.getOutputStream());
             // 保持在session中，登录时比对
             HttpSession session = request.getSession(true);
@@ -122,6 +128,12 @@ public class HomeController {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("获取验证码失败");
+        } finally {
+            try {
+                response.getOutputStream().close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
