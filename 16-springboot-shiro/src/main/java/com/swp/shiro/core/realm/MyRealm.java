@@ -61,7 +61,6 @@ public class MyRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        System.out.println("MyRealm -> doGetAuthenticationInfo");
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String username = token.getUsername();
         String password = String.valueOf(token.getPassword());
@@ -72,9 +71,11 @@ public class MyRealm extends AuthorizingRealm {
         opsForValue.increment(LOGIN_COUNT + username, 1);
         String loginCount = opsForValue.get(LOGIN_COUNT + username);
         // 如果失败次数超过限制，被锁一个小时
+        System.out.println("loginCount : " + loginCount);
         if (Integer.parseInt(loginCount) > 5){
             opsForValue.set(LOGIN_LOCK + username, "LOCK");
             stringRedisTemplate.expire(LOGIN_LOCK + username, 1, TimeUnit.MINUTES);
+            stringRedisTemplate.expire(LOGIN_COUNT + username, 1, TimeUnit.MINUTES);
         }
         // 如果用户被锁抛出异常
         if ("LOCK".equals(opsForValue.get(LOGIN_LOCK + username))) {
@@ -89,16 +90,13 @@ public class MyRealm extends AuthorizingRealm {
         String md5Password = simpleHash.toString();
 
         SysUser user = repository.findByUsernameAndPassword(username, md5Password);
-
         if (null == user) {
             return null;
         } else if (user.getState() == 2){
             throw new DisabledAccountException("账户被禁用");
         } else {
-            System.out.println("登录成功");
             // 清除记录的登录次数
             opsForValue.set(LOGIN_COUNT + username, "0");
-
         }
 
         SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(user.getCredentialsSalt()), getName());

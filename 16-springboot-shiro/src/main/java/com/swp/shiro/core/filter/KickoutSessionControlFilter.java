@@ -72,7 +72,6 @@ public class KickoutSessionControlFilter extends AccessControlFilter{
      */
     @Override
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
-        System.out.println(" ======= onAccessDenied ========== ");
         Subject subject = getSubject(servletRequest, servletResponse);
         if (!subject.isAuthenticated() && !subject.isRemembered()) {
             // 如果没有登录，直接进行之后的流程

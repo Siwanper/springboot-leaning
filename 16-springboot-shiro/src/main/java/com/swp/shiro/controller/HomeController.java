@@ -6,6 +6,8 @@ import com.swp.shiro.tools.vcode.SpecCaptcha;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +26,8 @@ import java.util.Map;
  */
 @Controller
 public class HomeController {
+
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     /**
      * 首页
@@ -46,7 +50,7 @@ public class HomeController {
 
     @RequestMapping(value = "/toLogin", method = RequestMethod.GET)
     public String toLogin(){
-        return "redirect:/index";
+        return "redirect:/login";
     }
     /**
      * 登录接口
@@ -58,7 +62,7 @@ public class HomeController {
      */
     @RequestMapping( value = "/toLogin", method = RequestMethod.POST)
     public String toLogin(String username, String password, String vcode, Boolean rememberMe, Map<String, Object> map) {
-        System.out.println("登录用户：" + username +" "+ password +" "+ vcode + rememberMe);
+        logger.info("登录用户：" + username +" "+ password +" "+ vcode + rememberMe);
         if (vcode == null || vcode == "") {
             map.put("msg" , "验证码不能为空！");
             return "/login";
@@ -83,20 +87,17 @@ public class HomeController {
             String msg = "";
             String ename = e.getClass().getName();
             if (UnknownAccountException.class.getName().equals(ename)) {
-                System.out.println("UnknownAccountException -- > 账号不存在：");
+                logger.info("UnknownAccountException -- > 账号不存在：");
                 msg = "UnknownAccountException -- > 账号不存在：";
             } else if (IncorrectCredentialsException.class.getName().equals(ename)) {
-                System.out.println("IncorrectCredentialsException -- > 密码不正确：");
+                logger.info("IncorrectCredentialsException -- > 密码不正确：");
                 msg = "IncorrectCredentialsException -- > 密码不正确：";
             } else if ("kaptchaValidateFailed".equals(ename)) {
-                System.out.println("kaptchaValidateFailed -- > 验证码错误");
+                logger.info("kaptchaValidateFailed -- > 验证码错误");
                 msg = "kaptchaValidateFailed -- > 验证码错误";
-            } else if (DisabledAccountException.class.getName().equals(ename)) {
-                System.out.println("DisabledAccountException -- > 用户已被禁用");
-                msg = "DisabledAccountException -- > 用户已被禁用";
-            } else {
-                msg = "else >> "+e;
-                System.out.println("else >>" + e.getMessage());
+            }  else {
+                msg = "else >> "+e.getMessage();
+                logger.info("else >>" + e.getMessage());
             }
             map.put("msg", msg);
             return "/login";
@@ -123,7 +124,7 @@ public class HomeController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("获取验证码失败");
+            logger.info("获取验证码失败");
         } finally {
             try {
                 response.getOutputStream().close();

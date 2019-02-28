@@ -5,56 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>登录</title>
     <link rel="stylesheet" th:href="@{/asset/css/bootstrap.min.css}">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script th:src="@{/asset/js/jquery-3.3.1.min.js}"></script>
     <script th:src="@{/asset/js/bootstrap.min.js}"></script>
     <style type="text/css">
+        body:before{
+            height: 50%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: "";
+            z-index: 0;
+            background: #4B96B4;
+            background: -moz-linear-gradient(-45deg, #4B96B4 0%, #66cdcc 100%);
+            background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, #4B96B4), color-stop(100%, #66cdcc));
+            background: -webkit-linear-gradient(-45deg, #4B96B4 0%, #66cdcc 100%);
+            background: -o-linear-gradient(-45deg, #4B96B4 0%, #66cdcc 100%);
+            background: -ms-linear-gradient(-45deg, #4B96B4 0%, #66cdcc 100%);
+            background: linear-gradient(-45deg, #4B96B4 0%, #66cdcc 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#4B96B4, endColorstr=#66cdcc, GradientType=1);
+        }
+
+        #login-title {
+            height: 100px;
+            font-size: 3rem;
+            color: #FFFFFF;
+            letter-spacing: 4px;
+        }
+
         #login-window {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 500px;
-            height: 300px;
-            margin-left: -250px;
-            margin-top: -150px;
-            padding: 35px 55px 35px 25px;
+            width: 400px;
+            height: 400px;
+            margin-left: -200px;
+            margin-top: -200px;
             z-index: 10;
-            background: #ffffff;
+        }
+        #login-form{
+            height: 300px;
+            position: relative;
+            background-color: #ffffff;
             box-shadow: 0 1px 11px rgba(0,0,0,.27);
-            border-radius: 2px;
+            border-radius: 5px;
+            padding: 35px 35px 35px 35px;
+        }
+
+        #login-form input {
+            font-size: 0.9rem;
+        }
+
+        #login-btn {
+            position: absolute;
+            width: 300px;
+            left: 50%;
+            margin-left: -150px;
         }
     </style>
 </head>
-<body style="background-color: #0062cc">
+<body>
 
 <div class="container">
+
     <div id="login-window">
-        <form class="form-horizontal" role="form" action="/toLogin" method="post">
-            <div class="form-group input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">账号</span>
-                </div>
-                <input id="username" class="form-control" type="text" name="username" placeholder="请输入用户名"/>
-            </div>
-            <div class="form-group input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">密码</span>
-                </div>
-                <input id="password" class="form-control" type="text" name="password" placeholder="请输入密码"/>
-            </div>
-            <div class="form-group input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">验证码</span>
-                </div>
-                <input id="vcode" class="form-control" type="text" name="vcode" placeholder="请输入验证码"/>
-                <img src="/getVcode" alt="验证码">
-            </div>
-            <div class="form-group">
-                <input type="checkbox" name="rememberMe" id="rememberMe"/> 记住我
-            </div>
+        <div id="login-title">
+            <p class="text-center">后台管理系统</p>
+        </div>
+        <p class="text-center" style="color: red; font-size: 0.5rem ;margin-bottom: 5px" th:text="${msg}"></p>
+        <div id="login-form">
 
-                <input class="btn btn-info" type="submit" value="登录"/>
-
-        </form>
+            <form class="form-horizontal" role="form" action="/toLogin" method="post">
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-user fa-fw" aria-hidden="true"></i> </span>
+                    </div>
+                    <input id="username" class="form-control" type="text" name="username" placeholder="请输入用户名"/>
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span>
+                    </div>
+                    <input id="password" class="form-control" type="text" name="password" placeholder="请输入密码"/>
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-shield fa-fw" aria-hidden="true"></i></span>
+                    </div>
+                    <input id="vcode" class="form-control" type="text" name="vcode" placeholder="请输入验证码"/>
+                    <img src="/getVcode" alt="验证码">
+                </div>
+                <div class="form-group">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe"/> 记住我
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="login-btn" class="btn btn-info" type="submit" value="登录"/>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
