@@ -112,7 +112,7 @@ public class ShiroConfig {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(host);
         redisManager.setPort(port);
-        redisManager.setExpire(60);
+        redisManager.setExpire(1800);
         return redisManager;
     }
 
@@ -154,7 +154,7 @@ public class ShiroConfig {
     public SimpleCookie rememberMeCookie(){
         SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
         // cookie生效时间 ,单位 ： 秒
-        simpleCookie.setMaxAge(60);
+        simpleCookie.setMaxAge(1800);
         return simpleCookie;
     }
 
