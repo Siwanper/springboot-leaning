@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="pageAdminNav(pageInfo)">
+        <div class="clearfix">
+            <ul class="pagination m-b-5 pull-right">
+                <li th:if="${pageInfo.hasPrevious()}">
+                    <a th:href="@{'?page='+${pageInfo.previousPageable().getPageNumber()}}" aria-label="Previous">
+                        <i class="fa fa-angle-left"></i>&nbsp;上一页
+                    </a>
+                </li>
+
+                <th:block th:each="nav : ${pageInfo.getTotalPages()}">
+                    <li th:class="${nav==pageInfo.getPageable().getPageNumber()}?'active':''"><a th:href="@{'?page='+${nav}}" th:text="${nav}"></a>
+                    </li>
+                </th:block>
+
+                <th:block th:if="${pageInfo.hasNext()}">
+                    <li>
+                        <a th:href="@{'?page='+${pageInfo.nextPageable().getPageNumber()}}" aria-label="Next">
+                            下一页&nbsp;<i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                </th:block>
+
+                <li><span th:text="'共'+${pageInfo.getTotalPages()}+'页'"></span></li>
+            </ul>
+        </div>
+    </div>
+</html>

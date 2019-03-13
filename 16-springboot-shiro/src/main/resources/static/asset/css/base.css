@@ -1,0 +1,51 @@
+.sidebar {
+    width: 260px;
+}
+
+#example-navbar-collapse {
+    padding-right: 25px;
+}
+
+.sidebar .navbar-collapse {
+    position: fixed;
+    height: 100%;
+    width: 260px;
+    background-color: #f8f8f8;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+#side-menu li a i {
+    padding-right: 25px;
+}
+
+.nav-second-level li a {
+    padding-left: 25px;
+}
+
+#wrapper {
+    height: 100%;
+    overflow: hidden;
+    width: 100%
+}
+
+.content-page{
+    margin-left: 260px;
+    overflow: hidden;
+}
+
+.content-page > .content {
+    padding: 20px 5px 15px;
+}
+
+.footer {
+    background-color: #f9f9f9;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    bottom: 0;
+    color: #58666e;
+    text-align: left !important;
+    padding: 20px 30px;
+    position: absolute;
+    right: 0;
+    left: 260px
+}
