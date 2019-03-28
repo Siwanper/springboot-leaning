@@ -30,12 +30,10 @@ public class UserController {
 
     @RequestMapping("/userList")
     @RequiresPermissions("userInfo:view")
-    public String userInfo(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "size", defaultValue = "5") int size, Model model){
+    public String userInfo(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "size", defaultValue = "2") int size, Model model){
 
         Pageable pageable = PageRequest.of(page,size);
-
         Page<SysUser> userList = repository.findAll(pageable);
-        System.out.println("users : " + userList);
         model.addAttribute("userList",userList);
         return "userInfo";
     }

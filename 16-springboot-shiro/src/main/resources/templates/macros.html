@@ -1,17 +1,66 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <div th:fragment="pageAdminNav(pageInfo)">
-        <div class="clearfix">
+        <div class="clearfix" style="text-align: center">
             <ul class="pagination m-b-5 pull-right">
                 <li th:if="${pageInfo.hasPrevious()}">
                     <a th:href="@{'?page='+${pageInfo.previousPageable().getPageNumber()}}" aria-label="Previous">
                         <i class="fa fa-angle-left"></i>&nbsp;上一页
                     </a>
                 </li>
+                <li>
+                    <a th:href="@{'?page=0'}">
+                        首页
+                    </a>
+                </li>
 
-                <th:block th:each="nav : ${pageInfo.getTotalPages()}">
-                    <li th:class="${nav==pageInfo.getPageable().getPageNumber()}?'active':''"><a th:href="@{'?page='+${nav}}" th:text="${nav}"></a>
+                <th:block th:if="${pageInfo.getTotalPages() < 7}" th:each="nav : ${#numbers.sequence(0,pageInfo.getTotalPages() - 1)}">
+                    <li th:class="${nav==pageInfo.getPageable().getPageNumber()}?'active':''"><a th:href="@{'?page='+${nav}}" th:text="${nav + 1}"></a>
                     </li>
+                </th:block>
+
+                <th:block th:unless="${pageInfo.getTotalPages() < 7}">
+
+                    <th:block th:if="${pageInfo.getPageable().getPageNumber() < 5}">
+                        <th:block th:each="nav : ${#numbers.sequence(0,4)}">
+                            <li th:class="${nav==pageInfo.getPageable().getPageNumber()}?'active':''"><a th:href="@{'?page='+${nav}}" th:text="${nav + 1}"></a>
+                            </li>
+                        </th:block>
+                        <li><a th:href="@{'?page=5'}" th:text="'...'"></a>
+                        </li>
+                        <li><a th:href="@{'?page='+${pageInfo.getTotalPages() - 1}}" th:text="${pageInfo.getTotalPages()}"></a>
+                        </li>
+                    </th:block>
+
+                    <th:block th:if="${(pageInfo.getPageable().getPageNumber() >= 5) && (pageInfo.getTotalPages() - 1 - pageInfo.getPageable().getPageNumber() >= 5)}">
+                        <li><a th:href="@{'?page=0'}" th:text="'1'"></a>
+                        </li>
+                        <li><a th:href="@{'?page='+${pageInfo.getPageable().getPageNumber() - 2}}" th:text="'...'"></a>
+                        </li>
+
+                        <li><a th:href="@{'?page='+${pageInfo.getPageable().getPageNumber() - 1}}" th:text="${pageInfo.getPageable().getPageNumber()}"></a>
+                        </li>
+                        <li th:class="'active'"><a th:href="@{'?page='+${pageInfo.getPageable().getPageNumber()}}" th:text="${pageInfo.getPageable().getPageNumber() + 1}"></a>
+                        </li>
+                        <li><a th:href="@{'?page='+${pageInfo.getPageable().getPageNumber() + 1}}" th:text="${pageInfo.getPageable().getPageNumber() + 2}"></a>
+                        </li>
+
+                        <li><a th:href="@{'?page='+${pageInfo.getPageable().getPageNumber() + 2}}" th:text="'...'"></a>
+                        </li>
+                        <li><a th:href="@{'?page='+${pageInfo.getTotalPages() - 1}}" th:text="${pageInfo.getTotalPages()}"></a>
+                        </li>
+                    </th:block>
+
+                    <th:block th:if="${pageInfo.getTotalPages() - 1 - pageInfo.getPageable().getPageNumber() < 5}">
+                        <li><a th:href="@{'?page=0'}" th:text="'1'"></a>
+                        </li>
+                        <li><a th:href="@{'?page=' + ${pageInfo.getTotalPages() - 6}}" th:text="'...'"></a>
+                        </li>
+                        <th:block th:each="nav : ${#numbers.sequence(pageInfo.getTotalPages() - 5,pageInfo.getTotalPages() - 1)}">
+                            <li th:class="${nav==pageInfo.getPageable().getPageNumber()}?'active':''"><a th:href="@{'?page='+${nav}}" th:text="${nav + 1}"></a>
+                            </li>
+                        </th:block>
+                    </th:block>
                 </th:block>
 
                 <th:block th:if="${pageInfo.hasNext()}">
@@ -21,7 +70,11 @@
                         </a>
                     </li>
                 </th:block>
-
+                <li>
+                    <a th:href="@{'?page='+ ${pageInfo.getTotalPages() - 1}}">
+                        未页
+                    </a>
+                </li>
                 <li><span th:text="'共'+${pageInfo.getTotalPages()}+'页'"></span></li>
             </ul>
         </div>
