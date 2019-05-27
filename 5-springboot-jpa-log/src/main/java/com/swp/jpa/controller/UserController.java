@@ -95,6 +95,7 @@ public class UserController implements ErrorController{
         model.addAttribute("user",user);
         return "/user/userEdit";
     }
+
     @Transactional
     @RequestMapping("/edit")
     public String edit(@RequestParam(name = "birthday") String birthday, @Valid UserParam userParam, BindingResult result,Model model) throws ParseException {

@@ -35,4 +35,5 @@ public interface UserMapper {
 
     @Delete("DELETE FROM tb_user WHERE uid = #{uid}")
     int deleteUser(User user);
+
 }

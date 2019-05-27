@@ -20,10 +20,10 @@ public class NotFoundException implements ErrorController {
         return "/error";
     }
 
+
     @RequestMapping("/error")
     public String error(ModelMap map){
         map.addAttribute("message", "404 not found link！");
         return "uploadStatus";
     }
-
 }
